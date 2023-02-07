@@ -1,4 +1,4 @@
-setURL('https://gruppe-376.developerakademie.net/smallest_backend_ever');
+setURL('https://sarah-zimmermann-schmutzler.developerakademie.net/smallest_backend_ever');
 
 let currentUrl = new URL(window.location.href); //bindet URL der aktuellen Seite an Variable
 let email = currentUrl.searchParams.get("email"); // liest Parameter email aus URL heraus
