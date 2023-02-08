@@ -17,9 +17,8 @@
 </head>
 
 <body onload="initSummary();">
-
    <div class="maincontainer">
-
+      <!-- header/footer-templates -->
       <header>
          <div w3-include-html="./assets/templates/header.html"></div>
       </header>
@@ -27,20 +26,28 @@
       <nav>
          <div w3-include-html="./assets/templates/side_menu.html"></div>
       </nav>
-      <script>
+      
+      <script></script>
 
-      </script>
+      <!-- main content -->
       <div class="summary-main">
+         <!---- headline ---->
          <div class="summary-headline">
             <span class="kpmt hide-text">Kanban Project Management Tool</span>
+
             <span class="headline">Summary</span>
+
             <div class="line-vertical"></div>
+
             <span class="summary-span">Everything in a nutshell!</span>
+
             <div class="line-horizontal"></div>
          </div>
-         <div class="summary-content-container">
-            <div class="summary-content">
 
+         <!---- display left and greeting right ---->
+         <div class="summary-content-container">
+            <!------ display ------>
+            <div class="summary-content">
                <div class="tasksOverview">
                   <a class="card-1c" href="board.html">
                      <div class="text-64-600-black" id="taskAllAmount">#</div>
@@ -89,22 +96,20 @@
                </div>
             </div>
 
+            <!------ greeting ------>
             <div class="welcome hide-welcome">
                <span class="welcome-time" id="welcomeTime">Good ###, </span><br>
                <span class="welcome-name" id="welcomeName">### ###</span>
             </div>
-
-
-
          </div>
       </div>
+
+      <!---- greeting animation for responsive ---->
       <div class="welcome-animation hide-welcome-animation">
-         <span class="welcome-time" id="welcomeTime-responsiv"></span><br>
+         <span class="welcome-time" id="welcomeTime-responsiv"></span>
+         <br>
          <span class="welcome-name" id="welcomeName-responsiv"></span>
       </div>
    </div>
-
-
 </body>
-
 </html>
