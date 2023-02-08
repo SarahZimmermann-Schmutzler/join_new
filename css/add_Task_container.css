@@ -225,7 +225,6 @@ label {
   overflow: hidden;
   transition: all 0.5s;
   cursor: pointer;
-
 }
 
 .assigned-list {
@@ -330,7 +329,6 @@ input[type="checkbox"],
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
   box-sizing: border-box;
   cursor: pointer;
-
 }
 
 .prio:hover {

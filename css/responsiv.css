@@ -1,6 +1,5 @@
-/* *************************** Media < 1370px****************** */
-
-/* *********************** responsiv BOARD******************** */
+/*  Media < 1370px */
+/* responsive board */
 @media (width < 1370px) {
   body {
     outline: none;
@@ -63,7 +62,8 @@
     font-weight: 400;
   }
 
-  /*for responsive addTask-view */
+
+  /*responsive addTask-view */
   .just-responsive {
     display: block;
   }
@@ -140,7 +140,7 @@
   }
 
 
-  /* edit Container */
+  /* responsive edit-container */
   .edit-card,
   .edit-card input,
   .edit-card textarea {
@@ -195,7 +195,7 @@
 }
 
 
-/* *******************responsiv Navbar & Header*/
+/* responsive side-menue & header*/
 @media (width < 1370px) {
   .navbar-bottom {
     display: flex;
@@ -231,8 +231,8 @@
 }
 
 
-/* *************************** Media < 470px****************** */
-/* *********************** responsiv BOARD******************** */
+/* media < 470px */
+/* responsive board */
 @media (width < 470px) {
   body {
     align-items: center;
@@ -297,7 +297,7 @@
 }
 
 
-/* *********************** responsiv Navbar******************** */
+/* responsive side-menu */
 @media (width < 470px) {
   .navbar-bottom a span {
     font-size: 12px;

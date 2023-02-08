@@ -36,7 +36,6 @@ body {
    overflow: hidden;
 }
 
-
 .board-headline {
    position: relative;
    display: flex;
@@ -549,7 +548,7 @@ body {
 }
 
 
-/* ******* Add_Task Container */
+/* Add_Task Container */
 .add-task-container {
    display: flex;
    justify-content: center;

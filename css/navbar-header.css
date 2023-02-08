@@ -191,7 +191,7 @@ a {
 }
 
 
-/* Navbar bottom */
+/* navbar bottom = footer */
 .navbar-bottom {
    display: none;
    flex-direction: row;
