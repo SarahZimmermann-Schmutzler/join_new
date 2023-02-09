@@ -16,14 +16,17 @@ async function includeHTML() {
    }
 }
 
-
+/**
+ * used on summary, board and addTask page
+ * highlights the according index tab on the side-menu
+ */
 function setNavActive(id) {
    document.getElementById(id).classList.add('active');
 }
 
 
-
 // functions used in header-template
+
 /**
  * starts when clicked on log-out in log-out menu
  * deletes logged User data from local storage

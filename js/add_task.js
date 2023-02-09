@@ -12,7 +12,7 @@ setURL('https://sarah-zimmermann-schmutzler.developerakademie.net/smallest_backe
 /**
  * load data from Server,
  * set arrays, include Header and Navbar,
- * set active menu button,
+ * set menu button on active,
  * render contact list
  */
 async function initAddTask() {
@@ -25,6 +25,7 @@ async function initAddTask() {
    setNavActive('navAddTask');
    renderContacts();
 }
+
 
 /**
  * includeHTML
@@ -45,80 +46,25 @@ async function includeHTML() {
 
 
 /**
- * render registrated user in assign list
+ * starts onload when "addTask"-page is opened
+ * fetches the currentUser from the local storage
  */
-function renderContacts() {
-   for (i = 0; i < allUsers.length; i++) {
-      let userID = allUsers[i]['id'];
-
-      if (allUsers[i]['name'] === currentUser['name']) {
-         document.getElementById('assigned-list').innerHTML += /*html*/ `
-      <div class="assign-line">
-         <div>You</div>
-         <input type="checkbox" id="userID-${userID}">
-      </div>
-      `;
-      }
-      else {
-         document.getElementById('assigned-list').innerHTML += /*html*/ `
-      <div class="assign-line">
-         <div>${allUsers[i]['name']}</div>
-         <input type="checkbox" id="userID-${userID}">
-      </div>
-      `;
-      }
-   }
-   document.getElementById('assigned-list').innerHTML += /*html*/ `
-      <div class="category-line check inviteNew" onclick="toggleInviteContact()">
-         <div> Invite new Contact</div>
-         <div><img style="" src="./assets/img/add_task/invite-symbol.png" alt=""></div>
-      </div>
-   `;
-}
-
-/**
- * open / close invite contact container 
- */
-function toggleInviteContact() {
-   document.getElementById('assign').classList.toggle('d-none');
-   document.getElementById('invite-contact').classList.toggle('d-none');
-}
-
-/**
- * discard invitation process
- */
-function discardInvitation() {
-   toggleInviteContact();
-}
-
-/** */
-// function sendInvitation() {
-
-//    toggleInviteContact();
-//    clearForm();
-//    document.getElementById('assign').classList.remove('open-category');
-
-// }
-
-/**
- * show required text for form validation
- */
-function requiredText(index) {
-   document.getElementById(`required-titel-${index}`).classList.remove('d-none');
-}
-
-/**
- * delete placeholder text in textarea
- */
-function clearContent() {
-   if (document.getElementById('add-description').value == 'Enter a Description') {
-      document.getElementById('add-description').value = '';
+function getLoggedUser() {
+   currentUser = JSON.parse(localStorage.getItem('logged User') || '9999');
+   if (currentUser == '9999') {
+      return;
+   } else {
+      document.getElementById('headerUserImg').src = "./assets/img/header/christina.png";
    }
 }
 
+
+//form validation
+
 /**
- * validation of input for a new task,
- * if true increase validationIndex or call required text function
+ * starts when clicked on the create-task-btn
+ * validates the inputs,
+ * if true increases validationIndex else calls required text function
  */
 function formValidation() {
    let validation = 0;
@@ -184,10 +130,108 @@ function formValidation() {
       document.getElementById('taskAddedMessage').classList.add('taskAddedMessageOut')
       addTask();
    }
+
+   // validateTitle(vtitle, validation);
+   // validateDescription(vdescription, validation);
+   // validateCategory(category, validation);
+   // validateAssignedTo(assigned, validation);
+   // validateDueDate(vdate, validation);
+   // validatePrio(prio, validation);
+   // validateDate(d, validation);
+   // validateResult(validation);
 }
 
+
+// function validateTitle(vtitle, validation) {
+//    if (vtitle === '') {
+//       requiredText('1')
+//    } else {
+//       validation += 1;
+//       document.getElementById(`required-titel-1`).classList.add('d-none');
+//    }
+// }
+
+
+// function validateDescription(vdescription, validation) {
+//    if (vdescription === '') {
+//       requiredText('2')
+//    } else {
+//       validation += 1;
+//       document.getElementById(`required-titel-2`).classList.add('d-none');
+//    }
+// }
+
+
+// function validateCategory(category, validation) {
+//    if (category == '') {
+//       requiredText('3')
+//    } else {
+//       validation += 1;
+//       document.getElementById(`required-titel-3`).classList.add('d-none');
+//    }
+// }
+
+
+// function validateAssignedTo(assigned, validation) {
+//    if (assigned.length < 1) {
+//       requiredText('4')
+//    } else {
+//       validation += 1;
+//       document.getElementById(`required-titel-4`).classList.add('d-none');
+//    }
+// }
+
+
+// function validateDueDate(vdate, validation) {
+//    if (vdate === '') {
+//       requiredText('5')
+
+//    } else {
+//       validation += 1;
+//       document.getElementById(`required-titel-5`).classList.add('d-none');
+//    }
+// }
+
+
+// function validatePrio(prio, validation) {
+//    if (prio == 0) {
+//       requiredText('6')
+
+//    } else {
+//       validation += 1;
+//       document.getElementById(`required-titel-6`).classList.add('d-none');
+//    }
+// }
+
+
+// function validateDate(d, validation) {
+//    if (d == false) {
+//       requiredText('7')
+//    } else {
+//       validation += 1;
+//       document.getElementById(`required-titel-7`).classList.add('d-none');
+//    }
+// }
+
+
+// function validateResult(validation) {
+//    if (validation == 7) {
+//       document.getElementById('taskAddedMessage').classList.add('taskAddedMessageOut')
+//       addTask();
+//    }
+// }
+
+
 /**
- * validate if dueDate is larger then today
+ * shows "this field is required" as part of form validation
+ */
+function requiredText(index) {
+   document.getElementById(`required-titel-${index}`).classList.remove('d-none');
+}
+
+
+/**
+ * validates if dueDate is larger then today
  */
 function checkDate() {
    var toDate = new Date();
@@ -196,6 +240,23 @@ function checkDate() {
    }
    return true;
 }
+
+/**
+ * checks which user is assigned to task
+ */
+function checkAssigned() {
+   let team = [];
+   for (i = 0; i < allUsers.length; i++) {
+      let status = document.getElementById(`userID-${i}`).checked;
+      if (status) {
+         team.push(i);
+      }
+   }
+   return team
+}
+
+
+//creating a task
 
 /**
  * add new task to allTasks array and save it on server,
@@ -207,9 +268,16 @@ async function addTask() {
    let description = document.getElementById('add-description').value;
    let subtasks = checkSubtasks();
    taskID += 1;
+   let task = taskContent(title, description, subtasks, taskID);
+   allTasks.push(task);
+   await backend.setItem('allTasks', JSON.stringify(allTasks));
+   await backend.setItem('taskID', taskID);
+   setTimeout(() => { window.location.href = 'board.html' }, 2000);
+}
 
-   let task =
-   {
+
+function taskContent(title, description, subtasks, taskID) {
+   return {
       'id': taskID,
       'title': title,
       'description': description,
@@ -225,30 +293,12 @@ async function addTask() {
          subtasks
       }
    };
-
-   allTasks.push(task);
-   await backend.setItem('allTasks', JSON.stringify(allTasks));
-   await backend.setItem('taskID', taskID);
-   setTimeout(() => { window.location.href = 'board.html' }, 2000);
-}
-
-/**
- * check which user is assigned to task
- */
-function checkAssigned() {
-   let team = [];
-   for (i = 0; i < allUsers.length; i++) {
-      let status = document.getElementById(`userID-${i}`).checked;
-      if (status) {
-         team.push(i);
-      }
-   }
-   return team
 }
 
 
 /**
- * get what subtask is checked and when push it to actual subtask array
+ * gets which subtask is checked,
+ * pushes it to actual subtask array
  */
 function checkSubtasks() {
    let subs = [];
@@ -256,19 +306,28 @@ function checkSubtasks() {
       checkedSub = document.getElementById(`subtask-${i}`).checked;
       subTaskText = document.getElementById(`subtask-${i}`).nextElementSibling.innerText;
       if (checkedSub) {
-         let subPush = {
-            'subID': i,
-            'subTaskText': subTaskText,
-            'subStatus': 'open'
-         }
+         let subPush = subtaskContent();
          subs.push(subPush)
       }
    }
    return subs;
 }
 
+
+function subtaskContent() {
+   return {
+      'subID': i,
+      'subTaskText': subTaskText,
+      'subStatus': 'open'
+   }
+}
+
+
+//clear the form insteat of create task
+
 /**
- * clear form, reset subtaskID
+ * starts when clicked on X-btn
+ * clears form 
 */
 function clearForm() {
    document.getElementById('add-title').value = '';
@@ -280,12 +339,145 @@ function clearForm() {
    }
    loadCategories('Select task Category', '#fff');
    document.getElementById('assign').classList.remove('open-category');
+   resetSubtask();
+}
+
+
+/**
+ * resets subtaskID
+ */
+function resetSubtask() {
    subtaskID = 2;
    document.getElementById('subtask-container').innerHTML = '';
-   document.getElementById('subtask-container').innerHTML = /*html*/ `<div><input type="checkbox" id="subtask-1"><span>Inform Customer Support</span></div>
-   <div> <input type="checkbox" id="subtask-2"><span>Send marketing paper</span></div>`;
+   document.getElementById('subtask-container').innerHTML = subtaskHTML();
    renderSubtask();
 }
+
+
+function subtaskHTML() {
+   return /*html*/ `<div><input type="checkbox" id="subtask-1"><span>Inform Customer Support</span></div>
+   <div> <input type="checkbox" id="subtask-2"><span>Send marketing paper</span></div>`;
+}
+
+
+/**
+* renders clean innerHTML for new subtask field
+*/
+function renderSubtask() {
+   document.getElementById('addNewSubtask').innerHTML = '';
+   document.getElementById('addNewSubtask').innerHTML = renderSubtaskHTML(); 
+}
+
+
+function renderSubtaskHTML() {
+   return `<div class="subButton">
+   <button type="button" onclick="addNewSubtask()">Add new subtask</button></div>`;
+}
+
+//section "descriptions"
+
+/**
+ * deletes placeholder text in descriptions-textarea
+ * (annot. Sarah: function not nesseccary, field clears placeholder automatically)
+ */
+function clearContent() {
+   if (document.getElementById('add-description').value == 'Enter a Description') {
+      document.getElementById('add-description').value = '';
+   }
+}
+
+
+// section "assigned to"
+
+/**
+ * renders registrated user in assigned to list
+ * if user is signed in it says YOU
+ * else it renders a list of all Users
+ * "invite new User" is always rendered 
+ */
+function renderContacts() {
+   for (i = 0; i < allUsers.length; i++) {
+      let userID = allUsers[i]['id'];
+      if (currentUser['name'] === allUsers[i]['name']) {
+         document.getElementById('assigned-list').innerHTML += renderYouHTML(userID);
+      }
+      else {
+         document.getElementById('assigned-list').innerHTML += renderUserListHTML(allUsers, userID);
+      }
+   }
+   document.getElementById('assigned-list').innerHTML += renderIncHTML();
+}
+
+
+function renderYouHTML(userID) {
+   return /*html*/ `
+   <div class="assign-line">
+      <div>You</div>
+      <input type="checkbox" id="userID-${userID}">
+   </div>
+   `;
+}
+
+
+function renderUserListHTML(allUsers, userID) {
+   return /*html*/ `
+   <div class="assign-line">
+      <div>${allUsers[i]['name']}</div>
+      <input type="checkbox" id="userID-${userID}">
+   </div>
+   `;
+}
+
+
+function renderIncHTML() {
+   return /*html*/ `
+   <div class="category-line check inviteNew" onclick="toggleInviteContact()">
+      <div> Invite new Contact</div>
+      <div><img style="" src="./assets/img/add_task/invite-symbol.png" alt=""></div>
+   </div>
+`;
+}
+
+
+//// invitation process
+
+/**
+ * open / close invite contact container 
+ */
+function toggleInviteContact() {
+   document.getElementById('assign').classList.toggle('d-none');
+   document.getElementById('invite-contact').classList.toggle('d-none');
+}
+
+
+/**
+ * starts when clicked on X 
+ * discard invitation process
+ */
+function discardInvitation() {
+   toggleInviteContact();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * set prio index and draw the buttons in right color
@@ -466,28 +658,9 @@ function renderAddedSubtask() {
 }
 
 
-/**
-*render clean innerHTML for new subtask field
-*/
-function renderSubtask() {
-   document.getElementById('addNewSubtask').innerHTML = '';
-   document.getElementById('addNewSubtask').innerHTML = `<div class="subButton">
-                           <button type="button" onclick="addNewSubtask()">Add new subtask</button>
-                        </div>`;
-}
 
-/**
- * starts onload when "summary"-page is opened
- * fetches the currentUser from the local storage
- */
-function getLoggedUser() {
-   currentUser = JSON.parse(localStorage.getItem('logged User') || '9999');
-   if (currentUser == '9999') {
-      return;
-   } else {
-      document.getElementById('headerUserImg').src = "./assets/img/header/christina.png";
-   }
-}
+
+
 
 
 /**
