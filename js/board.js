@@ -3,6 +3,8 @@ setURL('https://sarah-zimmermann-schmutzler.developerakademie.net/smallest_backe
 let ringColorsOfUser = [];
 let currentElement;
 let marker = 0;
+let allTodos;
+let allProgress;
 
 /**
  * start loading spinner, load data for board site,
@@ -20,27 +22,6 @@ async function initBoard() {
    setNavActive('navBoard');
    setTimeout(timeout, 1000); // timeout for loading spinner
    spinnerOff();
-}
-
-/**
- * delay updateHTML, this is only for showing loading spinner
- */
-function timeout() {
-   updateHTML(allTasks);
-}
-
-/**
- * stop loading spinner
- */
-function spinnerOff() {
-   myVar = setTimeout(toggleSpinner, 1200);
-}
-
-/**
- * display none loading spinner
- */
-function toggleSpinner() {
-   document.getElementById('loader').classList.toggle('d-none');
 }
 
 
@@ -61,34 +42,71 @@ async function includeHTML() {
    }
 }
 
-let allTodos;
-let allProgress;
+
+
+//loading spinner
 
 /**
- * clear content, find actual status of single task, render content new
+ * display none loading spinner
+ */
+function toggleSpinner() {
+   document.getElementById('loader').classList.toggle('d-none');
+}
+
+
+/**
+ * stop loading spinner
+ */
+function spinnerOff() {
+   myVar = setTimeout(toggleSpinner, 1200);
+}
+
+
+/**
+ * delay updateHTML, this is only for showing loading spinner
+ */
+function timeout() {
+   updateHTML(allTasks);
+}
+
+// render functions KanbanBoard
+
+/**
+ * clears content, find actual status of single task, render content new
  * @param {*} kindOfTasks 
  */
 async function updateHTML(kindOfTasks) {
-   document.getElementById('todo').innerHTML = '';
-   document.getElementById('progress').innerHTML = '';
-   document.getElementById('await').innerHTML = '';
-   document.getElementById('done').innerHTML = '';
-
-   document.getElementById('todo').classList.remove('highlight-div');
-   document.getElementById('progress').classList.remove('highlight-div');
-   document.getElementById('await').classList.remove('highlight-div');
-   document.getElementById('done').classList.remove('highlight-div');
-
+   clearColums();
+   removeHighlightedBg();
    allTodos = kindOfTasks.filter(t => t['status'] == 'todo');
    allProgress = kindOfTasks.filter(t => t['status'] == 'progress');
    allAwait = kindOfTasks.filter(t => t['status'] == 'await');
    allDone = kindOfTasks.filter(t => t['status'] == 'done');
+   renderKanbanBoard(allTodos, allProgress, allAwait, allDone, kindOfTasks);
+}
 
+
+function clearColums() {
+   document.getElementById('todo').innerHTML = '';
+   document.getElementById('progress').innerHTML = '';
+   document.getElementById('await').innerHTML = '';
+   document.getElementById('done').innerHTML = '';
+}
+
+
+function removeHighlightedBg() {
+   document.getElementById('todo').classList.remove('highlight-div');
+   document.getElementById('progress').classList.remove('highlight-div');
+   document.getElementById('await').classList.remove('highlight-div');
+   document.getElementById('done').classList.remove('highlight-div');
+}
+
+
+function renderKanbanBoard(allTodos, allProgress, allAwait, allDone, kindOfTasks) {
    renderTodos(allTodos);
    renderProgress(allProgress);
    renderAwait(allAwait);
    renderDone(allDone);
-
    renderPrio(kindOfTasks);
    renderSubtaskBoard(kindOfTasks);
    renderLetter(kindOfTasks);
@@ -96,97 +114,7 @@ async function updateHTML(kindOfTasks) {
 
 
 /**
- * find teammembers of a task and there first name capitals,
- * find teammember color, render color rings with capitals or digit if more then 3 members
- */
-function renderLetter(kindOfTasks) {
-   for (i = 0; i < kindOfTasks.length; i++) {
-      const element = kindOfTasks[i];
-      let teamLength = element['assigned']['assigned'].length; //5
-      let teamMember = [];   //Array of IDs of team members
-
-      for (j = 0; j < teamLength; j++) {
-         let memberID = element['assigned']['assigned'][j];
-         teamMember.push(memberID);
-      }
-
-      kLenght = teamMember.length;
-      if (kLenght > 3) { kLenght = 3 }
-      for (k = 0; k < kLenght; k++) {
-
-         let memberName = allUsers.find(el => el.id == teamMember[k]);
-         memberName = memberName['name'];
-         let capitals = getCapitals(memberName);
-
-         document.getElementById(`team-circle-${k + 1}-${element['id']}`).innerHTML = capitals;
-         document.getElementById(`team-circle-${k + 1}-${element['id']}`).classList.remove('d-none');
-         let position = findIndexOf(memberName);
-         userColor = ringColorsOfUser[position];
-         document.getElementById(`team-circle-${k + 1}-${element['id']}`).style.backgroundColor = userColor;
-      }
-
-      if (teamMember.length > 3) {
-         plusSign = teamMember.length - 2;
-         plusSign = '+' + plusSign;
-         document.getElementById(`team-circle-3-${element['id']}`).innerHTML = plusSign;
-         document.getElementById(`team-circle-3-${element['id']}`).style.background = "#2A3647";
-      }
-   }
-}
-
-/**
- * find position of member in allUsers array
- * @param {*} memberName 
- * @returns 
- */
-function findIndexOf(memberName) {
-   for (var l = 0; l < allUsers.length; l++) {
-      if (allUsers[l].name === memberName) {
-         return l;
-      }
-   }
-}
-
-/**
- * split first capitals from rest of name
- * @param {*} memberName 
- * @returns 
- */
-function getCapitals(memberName) {
-   return memberName.split(' ').map(word => word[0]).join('');
-}
-
-/**
- * render subtasks if set 
- * @param {*} kindOfTasks 
- */
-function renderSubtaskBoard(kindOfTasks) {
-   for (i = 0; i < kindOfTasks.length; i++) {
-      let subDone = 0;
-      let progress = 5;
-      const element = kindOfTasks[i]
-      const length = element['subtasks']['subtasks'].length;
-
-      for (j = 0; j < length; j++) {
-         if (element['subtasks']['subtasks'][j]['subStatus'] === 'done') {
-            subDone += 1;
-         }
-      }
-
-      if (length > 0) {
-         document.getElementById(`subtask-${element['id']}`).classList.remove('d-none');
-         document.getElementById(`doneCounter-${element['id']}`).innerHTML = `${subDone}/${length} Done`;
-      }
-
-      if (subDone > 0) {
-         progress = subDone * 100 / length;
-         document.getElementById(`progressbar-blue-${element['id']}`).setAttribute('style', `width:${progress}%`);
-      }
-   }
-}
-
-/**
- * render all tasks with status "todo"
+ * renders all tasks with status "todo"
  * @param {*} allTodos 
  */
 function renderTodos(allTodos) {
@@ -196,8 +124,9 @@ function renderTodos(allTodos) {
    }
 }
 
+
 /**
- * render alls tasks with status "in progress"
+ * renders alls tasks with status "in progress"
  * @param {*} allProgress 
  */
 function renderProgress(allProgress) {
@@ -207,8 +136,9 @@ function renderProgress(allProgress) {
    }
 }
 
+
 /**
- * render all tasks with status "awaiting feedback"
+ * renders all tasks with status "awaiting feedback"
  * @param {*} allAwait 
  */
 function renderAwait(allAwait) {
@@ -218,8 +148,9 @@ function renderAwait(allAwait) {
    }
 }
 
+
 /**
- * render all tasks with status "done"
+ * renders all tasks with status "done"
  * @param {*} allDone
  */
 function renderDone(allDone) {
@@ -229,56 +160,11 @@ function renderDone(allDone) {
    }
 }
 
-/**
- * set ring color of user by random
- */
-function setRingColors() {
-   for (i = 0; i < allUsers.length; i++) {
-      var color = getRandomColor();
-      ringColorsOfUser.push(color);
-   }
-}
+
+// render functions TaskCards
 
 /**
- * get a random color in hex code
- * @returns color 
- */
-function getRandomColor() {
-   var letters = '0123456789ABCDEF';
-   var color = '#';
-   for (var i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-   }
-   return color;
-}
-
-/**
- * render prio sign
- * @param {*} kindOfTasks 
- */
-function renderPrio(kindOfTasks) {
-   for (i = 0; i < kindOfTasks.length; i++) {
-      const element = kindOfTasks[i];
-
-      if (element['priority'] == 1) {
-         document.getElementById(`card-prio-${element['id']}`).src = "./assets/img/add_task/low-arrow.svg";
-      }
-
-      if (element['priority'] == 2) {
-         document.getElementById(`card-prio-${element['id']}`).src = "./assets/img/add_task/medium_equal.svg";
-      }
-
-      if (element['priority'] == 3) {
-         document.getElementById(`card-prio-${element['id']}`).src = "./assets/img/add_task/urgent-arrow.svg";
-      }
-      if (element['status'] === 'done') {
-         document.getElementById(`card-prio-${element['id']}`).src = "./assets/img/add_task/check-black.png";
-      }
-   }
-}
-
-/**
- * generate card content
+ * generates card content
  * @param {*} element 
  * @returns 
  */
@@ -290,8 +176,6 @@ function generateCardHTML(element) {
    let searchPositionTitle = elementTitleLower.search(searchInput);
    let searchPositionDescription = elementDescriptionLower.search(searchInput);
    let length = searchInput.length;
-
-
    if (searchPositionTitle >= 0 && marker == 1) {
       let markerTextTitle = elementTitle.substr(searchPositionTitle, length);
       let behindTextTitle = elementTitle.substr(searchPositionTitle + length,);
@@ -301,7 +185,6 @@ function generateCardHTML(element) {
       }
       elementTitle = beforeTextTitle + '<mark>' + markerTextTitle + '</mark>' + behindTextTitle;
    }
-
    if (searchPositionDescription >= 0 && marker == 1) {
       let markerTextDescription = elementDescription.substr(searchPositionDescription, length);
       let behindTextDescription = elementDescription.substr(searchPositionDescription + length,);
@@ -310,12 +193,12 @@ function generateCardHTML(element) {
       }
       elementDescription = beforeTextDescription + '<mark>' + markerTextDescription + '</mark>' + behindTextDescription;
    }
-
    return renderCardHTML(element, elementTitle, elementDescription);
 }
 
+
 /**
- * render CardHTML
+ * HTML Template for TaskCard
  * @param {*} element 
  * @param {*} elementTitle 
  * @param {*} elementDescription 
@@ -349,8 +232,150 @@ function renderCardHTML(element, elementTitle, elementDescription) {
          `;
 }
 
+
 /**
- * open big task card and if set => check/uncheck  subtask
+ * render prio sign
+ * @param {*} kindOfTasks 
+ */
+function renderPrio(kindOfTasks) {
+   for (i = 0; i < kindOfTasks.length; i++) {
+      const element = kindOfTasks[i];
+      if (element['priority'] == 1) {
+         document.getElementById(`card-prio-${element['id']}`).src = "./assets/img/add_task/low-arrow.svg";
+      }
+      if (element['priority'] == 2) {
+         document.getElementById(`card-prio-${element['id']}`).src = "./assets/img/add_task/medium_equal.svg";
+      }
+      if (element['priority'] == 3) {
+         document.getElementById(`card-prio-${element['id']}`).src = "./assets/img/add_task/urgent-arrow.svg";
+      }
+      if (element['status'] === 'done') {
+         document.getElementById(`card-prio-${element['id']}`).src = "./assets/img/add_task/check-black.png";
+      }
+   }
+}
+
+
+/**
+ * renders subtasks if they are set 
+ * @param {*} kindOfTasks 
+ */
+function renderSubtaskBoard(kindOfTasks) {
+   for (i = 0; i < kindOfTasks.length; i++) {
+      let subDone = 0;
+      let progress = 5;
+      const element = kindOfTasks[i]
+      const length = element['subtasks']['subtasks'].length;
+      for (j = 0; j < length; j++) {
+         if (element['subtasks']['subtasks'][j]['subStatus'] === 'done') {
+            subDone += 1;
+         }
+      }
+      if (length > 0) {
+         document.getElementById(`subtask-${element['id']}`).classList.remove('d-none');
+         document.getElementById(`doneCounter-${element['id']}`).innerHTML = `${subDone}/${length} Done`;
+      }
+      if (subDone > 0) {
+         progress = subDone * 100 / length;
+         document.getElementById(`progressbar-blue-${element['id']}`).setAttribute('style', `width:${progress}%`);
+      }
+   }
+}
+
+
+/**
+ * finds teammembers of a task and there first name capitals,
+ * finds teammember color, render color rings with capitals or digit if more then 3 members
+ */
+function renderLetter(kindOfTasks) {
+   for (i = 0; i < kindOfTasks.length; i++) {
+      const element = kindOfTasks[i];
+      let teamLength = element['assigned']['assigned'].length; //5
+      let teamMember = [];   //Array of IDs of team members
+
+      for (j = 0; j < teamLength; j++) {
+         let memberID = element['assigned']['assigned'][j];
+         teamMember.push(memberID);
+      }
+
+      kLenght = teamMember.length;
+      if (kLenght > 3) { kLenght = 3 }
+      for (k = 0; k < kLenght; k++) {
+         let memberName = allUsers.find(el => el.id == teamMember[k]);
+         memberName = memberName['name'];
+         let capitals = getCapitals(memberName);
+         document.getElementById(`team-circle-${k + 1}-${element['id']}`).innerHTML = capitals;
+         document.getElementById(`team-circle-${k + 1}-${element['id']}`).classList.remove('d-none');
+         let position = findIndexOf(memberName);
+         userColor = ringColorsOfUser[position];
+         document.getElementById(`team-circle-${k + 1}-${element['id']}`).style.backgroundColor = userColor;
+      }
+
+      if (teamMember.length > 3) {
+         plusSign = teamMember.length - 2;
+         plusSign = '+' + plusSign;
+         document.getElementById(`team-circle-3-${element['id']}`).innerHTML = plusSign;
+         document.getElementById(`team-circle-3-${element['id']}`).style.background = "#2A3647";
+      }
+   }
+}
+
+
+/**
+ * splits first capitals from rest of name
+ * @param {*} memberName 
+ * @returns 
+ */
+function getCapitals(memberName) {
+   return memberName.split(' ').map(word => word[0]).join('');
+}
+
+
+/**
+ * find position of member in allUsers array
+ * @param {*} memberName 
+ * @returns 
+ */
+function findIndexOf(memberName) {
+   for (var l = 0; l < allUsers.length; l++) {
+      if (allUsers[l].name === memberName) {
+         return l;
+      }
+   }
+}
+
+
+
+/**
+ * set ring color of user by random
+ */
+function setRingColors() {
+   for (i = 0; i < allUsers.length; i++) {
+      var color = getRandomColor();
+      ringColorsOfUser.push(color);
+   }
+}
+
+
+/**
+ * get a random color in hex code
+ * @returns color 
+ */
+function getRandomColor() {
+   var letters = '0123456789ABCDEF';
+   var color = '#';
+   for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+   }
+   return color;
+}
+
+
+// big-TaskCard-view after clicked on the TaskCards
+
+/**
+ * starts when clicked on a TaskCard
+ * opens big TaskCard and if a subtask is set => check/uncheck
  * @param {*} showTaskID 
  */
 function showTaskBig(showTaskID) {

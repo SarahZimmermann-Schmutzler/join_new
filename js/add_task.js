@@ -1,3 +1,5 @@
+setURL('https://sarah-zimmermann-schmutzler.developerakademie.net/smallest_backend_ever');
+
 let allTasks = [];
 let prio = 0;
 let category = '';
@@ -7,7 +9,6 @@ let subtaskID = 2;
 let dueDate;
 let taskID;
 
-setURL('https://sarah-zimmermann-schmutzler.developerakademie.net/smallest_backend_ever');
 
 /**
  * load data from Server,
@@ -46,7 +47,7 @@ async function includeHTML() {
 
 
 /**
- * starts onload when "addTask"-page is opened
+ * starts onload when "addTask", "board", "summary"-page is opened
  * fetches the currentUser from the local storage
  */
 function getLoggedUser() {
@@ -105,7 +106,6 @@ function formValidation() {
 
    if (vdate === '') {
       requiredText('5')
-
    } else {
       validation += 1;
       document.getElementById(`required-titel-5`).classList.add('d-none');
@@ -113,7 +113,6 @@ function formValidation() {
 
    if (prio == 0) {
       requiredText('6')
-
    } else {
       validation += 1;
       document.getElementById(`required-titel-6`).classList.add('d-none');
@@ -130,96 +129,7 @@ function formValidation() {
       document.getElementById('taskAddedMessage').classList.add('taskAddedMessageOut')
       addTask();
    }
-
-   // validateTitle(vtitle, validation);
-   // validateDescription(vdescription, validation);
-   // validateCategory(category, validation);
-   // validateAssignedTo(assigned, validation);
-   // validateDueDate(vdate, validation);
-   // validatePrio(prio, validation);
-   // validateDate(d, validation);
-   // validateResult(validation);
 }
-
-
-// function validateTitle(vtitle, validation) {
-//    if (vtitle === '') {
-//       requiredText('1')
-//    } else {
-//       validation += 1;
-//       document.getElementById(`required-titel-1`).classList.add('d-none');
-//    }
-// }
-
-
-// function validateDescription(vdescription, validation) {
-//    if (vdescription === '') {
-//       requiredText('2')
-//    } else {
-//       validation += 1;
-//       document.getElementById(`required-titel-2`).classList.add('d-none');
-//    }
-// }
-
-
-// function validateCategory(category, validation) {
-//    if (category == '') {
-//       requiredText('3')
-//    } else {
-//       validation += 1;
-//       document.getElementById(`required-titel-3`).classList.add('d-none');
-//    }
-// }
-
-
-// function validateAssignedTo(assigned, validation) {
-//    if (assigned.length < 1) {
-//       requiredText('4')
-//    } else {
-//       validation += 1;
-//       document.getElementById(`required-titel-4`).classList.add('d-none');
-//    }
-// }
-
-
-// function validateDueDate(vdate, validation) {
-//    if (vdate === '') {
-//       requiredText('5')
-
-//    } else {
-//       validation += 1;
-//       document.getElementById(`required-titel-5`).classList.add('d-none');
-//    }
-// }
-
-
-// function validatePrio(prio, validation) {
-//    if (prio == 0) {
-//       requiredText('6')
-
-//    } else {
-//       validation += 1;
-//       document.getElementById(`required-titel-6`).classList.add('d-none');
-//    }
-// }
-
-
-// function validateDate(d, validation) {
-//    if (d == false) {
-//       requiredText('7')
-//    } else {
-//       validation += 1;
-//       document.getElementById(`required-titel-7`).classList.add('d-none');
-//    }
-// }
-
-
-// function validateResult(validation) {
-//    if (validation == 7) {
-//       document.getElementById('taskAddedMessage').classList.add('taskAddedMessageOut')
-//       addTask();
-//    }
-// }
 
 
 /**
