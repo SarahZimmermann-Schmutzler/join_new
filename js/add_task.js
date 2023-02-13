@@ -8,6 +8,7 @@ let assigned = [];
 let subtaskID = 2;
 let dueDate;
 let taskID;
+let validation = 0;
 
 
 /**
@@ -68,64 +69,62 @@ function getLoggedUser() {
  * if true increases validationIndex else calls required text function
  */
 function formValidation() {
-   let validation = 0;
    let vtitle = document.getElementById('add-title').value;
    let vdescription = document.getElementById('add-description').value;
    let vdate = document.getElementById('add-date').value;
    assigned = checkAssigned();
    dueDate = document.getElementById('add-date').value;
    let d = checkDate();
+   validateField(vtitle, '1');
+   validateField(vdescription, '2');
+   validateField(category, '3');
+   validateAssigned(assigned, '4');
+   validateField(vdate, '5');
+   validatePrio(prio, '6');
+   validateDate(d, '7');
+   validationResult(validation);
+   validation = 0;
+}
 
-   if (vtitle === '') {
-      requiredText('1')
-   } else {
-      validation += 1;
-      document.getElementById(`required-titel-1`).classList.add('d-none');
+
+function validateField(fieldValue, fieldNumber) {
+   if (fieldValue === '') requiredText(fieldNumber);
+   else {
+      validation ++;
+      document.getElementById(`required-titel-${fieldNumber}`).classList.add('d-none');
    }
+}
 
-   if (vdescription === '') {
-      requiredText('2')
-   } else {
-      validation += 1;
-      document.getElementById(`required-titel-2`).classList.add('d-none');
+
+function validateAssigned(fieldValue, fieldNumber) {
+   if (fieldValue.length < 1) requiredText(fieldNumber);
+   else {
+      validation ++;
+      document.getElementById(`required-titel-${fieldNumber}`).classList.add('d-none');
    }
+}
 
-   if (category == '') {
-      requiredText('3')
-   } else {
-      validation += 1;
-      document.getElementById(`required-titel-3`).classList.add('d-none');
+
+function validatePrio(fieldValue, fieldNumber) {
+   if (fieldValue == 0) requiredText(fieldNumber);
+   else {
+      validation ++;
+      document.getElementById(`required-titel-${fieldNumber}`).classList.add('d-none');
    }
+}
 
-   if (assigned.length < 1) {
-      requiredText('4')
-   } else {
-      validation += 1;
-      document.getElementById(`required-titel-4`).classList.add('d-none');
+
+function validateDate(fieldValue, fieldNumber) {
+   if (fieldValue == false) requiredText(fieldNumber);
+   else {
+      validation ++;
+      document.getElementById(`required-titel-${fieldNumber}`).classList.add('d-none');
    }
+}
 
-   if (vdate === '') {
-      requiredText('5')
-   } else {
-      validation += 1;
-      document.getElementById(`required-titel-5`).classList.add('d-none');
-   }
 
-   if (prio == 0) {
-      requiredText('6')
-   } else {
-      validation += 1;
-      document.getElementById(`required-titel-6`).classList.add('d-none');
-   }
-
-   if (d == false) {
-      requiredText('7')
-   } else {
-      validation += 1;
-      document.getElementById(`required-titel-7`).classList.add('d-none');
-   }
-
-   if (validation == 7) {
+function validationResult(fieldValue) {
+   if (fieldValue == 7) {
       document.getElementById('taskAddedMessage').classList.add('taskAddedMessageOut')
       addTask();
    }
@@ -174,11 +173,7 @@ function checkAssigned() {
  * redirects to board html
  */
 async function addTask() {
-   let title = document.getElementById('add-title').value;
-   let description = document.getElementById('add-description').value;
-   let subtasks = checkSubtasks();
-   taskID += 1;
-   let task = taskContent(title, description, subtasks, taskID);
+   let task = taskContent();
    allTasks.push(task);
    await backend.setItem('allTasks', JSON.stringify(allTasks));
    await backend.setItem('taskID', taskID);
@@ -186,7 +181,11 @@ async function addTask() {
 }
 
 
-function taskContent(title, description, subtasks, taskID) {
+function taskContent() {
+   let title = document.getElementById('add-title').value;
+   let description = document.getElementById('add-description').value;
+   let subtasks = checkSubtasks();
+   taskID += 1;
    return {
       'id': taskID,
       'title': title,

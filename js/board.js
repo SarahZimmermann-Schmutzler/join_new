@@ -254,7 +254,6 @@ function generateCardHTML(element) {
 function renderCardHTML(element, elementTitle, elementDescription) {
    return /*html*/ `
       <div class="card" draggable="true" id="${element['id']}" ondragstart="startDragging(${element['id']})" onclick="showTaskBig(this.id)">
-
           <div class="category" style="background-color:${element['categoryColor']};">${element['category']}</div>
           <div class="card-title text-16-700-black">${elementTitle}</div>
           <div class="card-description">${elementDescription}</div>

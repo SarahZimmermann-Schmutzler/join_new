@@ -193,7 +193,6 @@ function formValidationOfEditTask(editTitle, editDescription, editDueStatus, edi
     if (editTitle == "") {
         requiredText('8');
         return 0;
-
     } else if (editDescription == "") {
         requiredText('9');
         return 0;
@@ -203,8 +202,7 @@ function formValidationOfEditTask(editTitle, editDescription, editDueStatus, edi
     } else if (editDueStatus == false) {
         requiredText('10');
         return 0;
-    }
-    else {
+    } else {
         return 1
     }
 }
