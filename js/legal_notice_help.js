@@ -1,6 +1,7 @@
 async function initLegalHelp() {
     await includeHTML();
     getLoggedUser();
+    setNavActive('legal-side');
 }
 
 

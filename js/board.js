@@ -43,6 +43,52 @@ async function includeHTML() {
 }
 
 
+// Section "Search"
+let searchTitle;
+let searchDescription;
+let searchInput = '';
+/**
+ * filters all matching tasks by title or description
+ * unless it is written with lower or upper cases
+ */
+function filterTasks() {
+   marker = 0;
+   let filteredTasks = [];
+   searchInput = document.getElementById('search-input').value.toLowerCase();
+   let length = allTasks.length;
+
+   for (i = 0; i < length; i++) {
+      searchTitle = allTasks[i]['title'].toLowerCase();
+      searchDescription = allTasks[i]['description'].toLowerCase();
+      if (searchTitle.match(searchInput) == searchInput || searchDescription.match(searchInput) == searchInput) {
+         filteredTasks.push(allTasks[i]);
+         marker = 1;
+      }
+   }
+   updateHTML(filteredTasks);
+}
+
+
+//Btn Add task + (Desktop Version)
+
+/**
+ * starts when clicked on Btn on Side or X-btn on AddTask Card
+ * opens and closes the add task container template
+ */
+function toggleAddContainer() {
+   document.getElementById('add-task-container').classList.toggle('hide-task-container');
+   renderContacts();
+}
+
+
+/**
+ * starts when clicked on + on "board"-page (mobile version)
+ * directs to addTask
+ */
+function directToAddTask() {
+   window.location.href = 'add_task_board.html';
+}
+
 
 //loading spinner
 
@@ -68,6 +114,7 @@ function spinnerOff() {
 function timeout() {
    updateHTML(allTasks);
 }
+
 
 // render functions KanbanBoard
 
@@ -332,7 +379,7 @@ function getCapitals(memberName) {
 
 
 /**
- * find position of member in allUsers array
+ * finds position of member in allUsers array
  * @param {*} memberName 
  * @returns 
  */
@@ -343,7 +390,6 @@ function findIndexOf(memberName) {
       }
    }
 }
-
 
 
 /**
@@ -374,10 +420,10 @@ function getRandomColor() {
 // big-TaskCard-view after clicked on the TaskCards
 
 /**
- * starts when clicked on a TaskCard
- * opens big TaskCard and if a subtask is set => check/uncheck
- * @param {*} showTaskID 
- */
+* starts when clicked on a TaskCard
+* opens big TaskCard and if a subtask is set => check/uncheck
+* @param {*} showTaskID 
+*/
 function showTaskBig(showTaskID) {
    currentElement = showTaskID;
    document.getElementById('show-task').classList.remove('d-none');
@@ -392,52 +438,9 @@ function showTaskBig(showTaskID) {
    renderShowSubtasks(element);
 }
 
-/**
- * render subtasks on big show card
- * @param {*} element 
- */
-function renderShowSubtasks(element) {
-   document.getElementById('show-subtask-list').innerHTML = '';
-   let subtaskLength = element['subtasks']['subtasks'].length;
-
-   if (subtaskLength > 0) {
-      document.getElementById('show-subtask-container').classList.remove('d-none');
-
-      for (i = 0; i < subtaskLength; i++) {
-         let subtaskStatus = element['subtasks']['subtasks'][i]['subStatus'];
-         let checkBox = "./assets/img/board/checkbox-unchecked.png";
-         if (subtaskStatus == 'done') { checkBox = "./assets/img/board/checkbox-checked.png" }
-         document.getElementById('show-subtask-list').innerHTML += /*html*/ `
-          <div class="show-subtask" onclick="checkSubtask(${element['id']}, ${i})">
-            <img src=${checkBox} alt="">
-            <span id="show-subtask-${i}">${element['subtasks']['subtasks'][i]['subTaskText']}</span>
-         </div>
-         `;
-      }
-   }
-   else {
-      document.getElementById('show-subtask-container').classList.add('d-none');
-   }
-}
 
 /**
- * check if subtasks is open or done
- * @param {*} taskID 
- * @param {*} subtaskID 
- */
-async function checkSubtask(taskID, subtaskID) {
-   const element = allTasks.find(el => el.id == taskID);
-   if (element['subtasks']['subtasks'][subtaskID]['subStatus'] == 'open') {
-      element['subtasks']['subtasks'][subtaskID]['subStatus'] = 'done';
-   } else {
-      element['subtasks']['subtasks'][subtaskID]['subStatus'] = 'open';
-   }
-   renderShowSubtasks(element);
-   await backend.setItem('allTasks', JSON.stringify(allTasks));
-}
-
-/**
- * render priority on big show card 
+ * renders "priority" on big TaskCard 
  * @param {*} element 
  */
 function renderShowPriority(element) {
@@ -468,7 +471,7 @@ function renderShowPriority(element) {
 
 
 /**
- * render assigned on big show card 
+ * renders "assigned on" big TaskCard 
  * @param {*} element
  */
 function renderShowAssigned(element) {
@@ -480,16 +483,72 @@ function renderShowAssigned(element) {
       let memberCapitals = getCapitals(teamMember)
       let position = findIndexOf(teamMember);
       let userColor = ringColorsOfUser[position];
-
-      document.getElementById('show-assigned').innerHTML += /*html*/ `<div class="show-member">
-                        <div id="show-member-ring" class="show-task-team-circle" style="background-color:${userColor}">${memberCapitals}</div>
-                        <div id="show-member-name">${teamMember}</div>
-                     </div>`;
+      document.getElementById('show-assigned').innerHTML += renderShowAssignedHTML(userColor, memberCapitals, teamMember);
    }
 }
 
+
+function renderShowAssignedHTML(userColor, memberCapitals, teamMember) {
+   return /*html*/ `<div class="show-member">
+   <div id="show-member-ring" class="show-task-team-circle" style="background-color:${userColor}">${memberCapitals}</div>
+   <div id="show-member-name">${teamMember}</div>
+</div>`;
+}
+
+
 /**
- * close show or edit card 
+ * render subtasks on big show card
+ * @param {*} element 
+ */
+function renderShowSubtasks(element) {
+   document.getElementById('show-subtask-list').innerHTML = '';
+   let subtaskLength = element['subtasks']['subtasks'].length;
+   if (subtaskLength > 0) {
+      document.getElementById('show-subtask-container').classList.remove('d-none');
+
+      for (i = 0; i < subtaskLength; i++) {
+         let subtaskStatus = element['subtasks']['subtasks'][i]['subStatus'];
+         let checkBox = "./assets/img/board/checkbox-unchecked.png";
+         if (subtaskStatus == 'done') { checkBox = "./assets/img/board/checkbox-checked.png" }
+         document.getElementById('show-subtask-list').innerHTML += renderShowSubtasksHTML(element, checkBox, i);
+      }
+   }
+   else {
+      document.getElementById('show-subtask-container').classList.add('d-none');
+   }
+}
+
+
+function renderShowSubtasksHTML(element, checkBox, i) {
+   return /*html*/ `
+   <div class="show-subtask" onclick="checkSubtask(${element['id']}, ${i})">
+     <img src=${checkBox} alt="">
+     <span id="show-subtask-${i}">${element['subtasks']['subtasks'][i]['subTaskText']}</span>
+  </div>
+  `;
+}
+
+
+/**
+ * checks if subtasks is open or done
+ * @param {*} taskID 
+ * @param {*} subtaskID 
+ */
+async function checkSubtask(taskID, subtaskID) {
+   const element = allTasks.find(el => el.id == taskID);
+   if (element['subtasks']['subtasks'][subtaskID]['subStatus'] == 'open') {
+      element['subtasks']['subtasks'][subtaskID]['subStatus'] = 'done';
+   } else {
+      element['subtasks']['subtasks'][subtaskID]['subStatus'] = 'open';
+   }
+   renderShowSubtasks(element);
+   await backend.setItem('allTasks', JSON.stringify(allTasks));
+}
+
+
+/**
+ * starts when clicked on X on big TaskCard or EditCard
+ * closes card 
  * @param {*} cardName 
  */
 function closeCard(cardName) {
@@ -500,237 +559,13 @@ function closeCard(cardName) {
    updateHTML(allTasks);
 }
 
-/**
- * open big edit card for task
- */
-function openEditCard() {
-   document.getElementById('edit-card').classList.remove('d-none');
-   closeCard('show-task');
-   renderEditCard();
-}
 
-/**
- * renderEditCard
- */
-function renderEditCard() {
-   let element = allTasks.find(task => task.id == currentElement);
-   document.getElementById('edit-title').value = element['title'];
-   document.getElementById('edit-description').value = element['description'];
-   document.getElementById('edit-date').value = element['dueDate'];
-   renderEditPrio(element);
-   renderEditAssigned(element);
-   renderEditRings(element);
-}
-
-/**
- * renderEditRings
- * @param {*} element 
- */
-function renderEditRings(element) {
-   document.getElementById('edit-ring-container').innerHTML = '';
-   for (i = 0; i < element['assigned']['assigned'].length; i++) {
-      let memberID = element['assigned']['assigned'][i];
-      teamMember = allUsers.find(el => el.id == memberID).name;
-      let memberCapitals = getCapitals(teamMember)
-      let position = findIndexOf(teamMember);
-      let userColor = ringColorsOfUser[position];
-      document.getElementById('edit-ring-container').innerHTML += /*html*/ `
-      <div class="edit-ring" style="background-color:${userColor}">${memberCapitals}</div>
-      `;
-   }
-}
-
-
-/**
- * renderEditAssigned
- * @param {*} element 
- */
-function renderEditAssigned(element) {
-   let length = allUsers.length;
-   document.getElementById('edit-allUsers').innerHTML = '';
-   for (i = 0; i < length; i++) {
-      let userName = allUsers[i]['name'];
-      let userID = allUsers[i]['id'];
-      let checkedStatus = 'unchecked';
-      let assignedLength = element['assigned']['assigned'].length;
-      for (j = 0; j < assignedLength; j++) {
-         if (element['assigned']['assigned'][j] == userID) {
-            checkedStatus = 'checked';
-            break;
-         }
-      }
-      document.getElementById('edit-allUsers').innerHTML += /*html*/ `
-      <div class="edit-assigned-user-line">
-         <div>${userName}</div>
-         <input type="checkbox" id="edit-assigned-userID-${userID}" ${checkedStatus}>
-      </div>
-      `;
-   }
-}
-
-/**
- * open drop down menu
- */
-function pullDown() {
-   document.getElementById('edit-assigned-container').classList.toggle('pullDown');
-   document.getElementById('pullDownArrow').classList.toggle('rotateZ');
-}
-
-/**
- * render edit priority
- * @param {*} element 
- */
-function renderEditPrio(element) {
-   let prio = element['priority'];
-   setPrioColor(prio);
-}
-
-
-/**
- * set prio color
- * @param {*} prio 
- */
-function setPrioColor(prio) {
-   document.getElementById('edit-prio-1').style = "background-color:#fff; color:black";
-   document.getElementById('edit-prio-1-img').src = "./assets/img/board/arrows-down-green.png";
-   document.getElementById('edit-prio-2').style = "background-color:#fff; color:black";
-   document.getElementById('edit-prio-2-img').src = "./assets/img/board/equal-sign-orange.png";
-   document.getElementById('edit-prio-3').style = "background-color:#fff; color:black";
-   document.getElementById('edit-prio-3-img').src = "./assets/img/board/arrows-up-red.png";
-
-   if (prio == 1) {
-      document.getElementById('edit-prio-1').style = "background-color:#7AE229; color:white";
-      document.getElementById('edit-prio-1-img').src = "./assets/img/board/arrows-down-white.png";
-   }
-   if (prio == 2) {
-      document.getElementById('edit-prio-2').style = "background-color:#FFA800; color:white";
-      document.getElementById('edit-prio-2-img').src = "./assets/img/board/equal-sign-white.png";
-   }
-   if (prio == 3) {
-      document.getElementById('edit-prio-3').style = "background-color:#FF3D00; color:white";
-      document.getElementById('edit-prio-3-img').src = "./assets/img/board/arrows-up-white.png";
-
-   }
-}
-
-let editPrio;
-/**
- * set new priority
- * @param {*} prio 
- */
-function editSetNewPrio(prio) {
-   editPrio = prio;
-   setPrioColor(prio);
-}
-
-/**
- * save edited task and close edit container 
- */
-async function saveEditTask() {
-   let validationStatus = 0;
-   const element = allTasks.find(el => el.id == currentElement);
-   let editTitle = document.getElementById('edit-title').value;
-   let editDescription = document.getElementById('edit-description').value;
-   dueDate = document.getElementById('edit-date').value;
-   let editDueStatus = checkDate();
-   let editAssigned = checkEditAssigned();
-   validationStatus = formValidationOfEditTask(editTitle, editDescription, editDueStatus, editAssigned);
-   if (validationStatus == 1) {
-      element['title'] = editTitle;
-      element['description'] = editDescription;
-      element['dueDate'] = dueDate;
-      element['priority'] = editPrio;
-      element['assigned']['assigned'] = editAssigned;
-      await backend.setItem('allTasks', JSON.stringify(allTasks));
-      closeCard('edit-card');
-   }
-}
-
-/**
- *  validate edited task
- * @param {*} editTitle 
- * @param {*} editDescription 
- * @param {*} editDueStatus 
- * @param {*} editAssigned 
- * @returns 
- */
-function formValidationOfEditTask(editTitle, editDescription, editDueStatus, editAssigned) {
-   if (editTitle == "") {
-      requiredText('8');
-      return 0;
-
-   } else if (editDescription == "") {
-      requiredText('9');
-      return 0;
-   } else if (editAssigned.length <= 0) {
-      requiredText('11');
-      return 0;
-   } else if (editDueStatus == false) {
-      requiredText('10');
-      return 0;
-   }
-   else {
-      return 1
-   }
-}
-
-
-/**
- * check who is noe member of task team 
- * @returns new team
- */
-function checkEditAssigned() {
-   let team = [];
-   for (i = 0; i < allUsers.length; i++) {
-      let status = document.getElementById(`edit-assigned-userID-${i}`).checked;
-      if (status) {
-         team.push(i);
-      }
-   }
-   return team
-}
-
-
-let searchTitle;
-let searchDescription;
-let searchInput = '';
-/**
- * filter all matching tasks by title or description unless it is written with lower or upper cases
- */
-function filterTasks() {
-   marker = 0;
-   let filteredTasks = [];
-   searchInput = document.getElementById('search-input').value.toLowerCase();
-   let length = allTasks.length;
-
-   for (i = 0; i < length; i++) {
-      searchTitle = allTasks[i]['title'].toLowerCase();
-      searchDescription = allTasks[i]['description'].toLowerCase();
-      if (searchTitle.match(searchInput) == searchInput || searchDescription.match(searchInput) == searchInput) {
-         filteredTasks.push(allTasks[i]);
-         marker = 1;
-      }
-   }
-   updateHTML(filteredTasks);
-}
-
-/**
- * open the add task container 
- */
-function toggleAddContainer() {
-   document.getElementById('add-task-container').classList.toggle('hide-task-container');
-   renderContacts();
-}
-
-
-
-/*******************************************
- ****************** darg and drop functions
- ******************************************/
+// Drag and Drop Functions
+ 
 let currentDraggedElement;
-
+ 
 /**
- * starts draaging and rotate the dragged card 
+ * starts dragging and rotates the dragged card 
  * @param {*} id 
  */
 function startDragging(id) {
@@ -739,7 +574,7 @@ function startDragging(id) {
 }
 
 /**
- * allow container to drop
+ * allows container to drop
  * @param {*} ev 
  */
 function allowDrop(ev) {
@@ -747,8 +582,8 @@ function allowDrop(ev) {
 }
 
 /**
- * change status of dropped task and update content,
- * save new status on server
+ * changes status of dropped task and updates content,
+ * saves new status on server
  * @param {*} status 
  */
 async function moveTo(status) {
@@ -762,7 +597,7 @@ async function moveTo(status) {
 }
 
 /**
- * highlight the actual drop container 
+ * highlights the actual drop container 
  * @param {*} index 
  */
 function highlight(index) {
@@ -770,18 +605,9 @@ function highlight(index) {
 }
 
 /**
- * remove last highlight
+ * removes last highlight
  * @param {*} index 
  */
 function removeHighlight(index) {
    document.getElementById(index).classList.remove('highlight-div');
-}
-
-
-/**
- * starts when clicked on + on "board"-page (mobile version)
- * directs to addTask
- */
-function directToAddTask() {
-   window.location.href = 'add_task_board.html';
 }

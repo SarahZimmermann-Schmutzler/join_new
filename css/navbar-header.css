@@ -60,6 +60,11 @@ a {
    margin-left: 20px;
 }
 
+.legal:hover {
+   color: #fff !important;
+   background-color: var(--activeblue);
+}
+
 #logo {
    width: 100px;
    margin: 66px 0 103px 0;
