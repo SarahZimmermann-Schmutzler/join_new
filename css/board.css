@@ -566,6 +566,7 @@ body {
    /* 60px; */
    width: 81%;
    /* fit-content; */
+   height: 90vh;
    z-index: 100;
    background-color: white;
    /* border-radius: 30px; */
