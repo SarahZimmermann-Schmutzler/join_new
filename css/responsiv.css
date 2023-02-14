@@ -64,6 +64,10 @@
 
 
   /*responsive addTask-view */
+  .add-task-container {
+    display: none !important;
+  }
+
   .just-responsive {
     display: block;
   }

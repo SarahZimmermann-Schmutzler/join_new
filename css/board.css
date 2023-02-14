@@ -547,20 +547,31 @@ body {
    font-weight: 400;
 }
 
+/* Add Task Container who shows up after clicking on "AddTask +"-btn */
 
 /* Add_Task Container */
 .add-task-container {
    display: flex;
    justify-content: center;
    align-items: flex-start;
-   position: absolute;
-   padding: 68px 80px;
-   left: 400px;
-   top: 60px;
-   width: fit-content;
+   position: fixed;
+   /* padding: 68px 80px; */
+   padding-top: 68px;
+   padding-right: 80px;
+   padding-bottom: 25px;
+   padding-left: 80px;
+   left: 232px;
+   /* 400px; */
+   top: 89px;
+   /* 60px; */
+   width: 81%;
+   /* fit-content; */
    z-index: 100;
    background-color: white;
-   border-radius: 30px;
+   /* border-radius: 30px; */
+   border-top-right-radius: 30px;
+   border-bottom-right-radius: 30px;
+   border-bottom-left-radius: 30px;
    border: 0;
    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.4);
    background-color: white;
@@ -568,7 +579,7 @@ body {
 }
 
 .hide-task-container {
-   left: 105%;
+   left: 250%;
 }
 
 .just-responsive {

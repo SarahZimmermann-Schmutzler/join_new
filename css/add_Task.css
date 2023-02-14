@@ -509,6 +509,11 @@ input[type="checkbox"],
 .button-close-add {
    position: absolute;
    top: -160px;
-   right: -50px;
+   right: -6px;
    cursor: pointer;
+}
+
+.less-margin-card {
+   margin-top: 70px !important;
+   margin-bottom: 0px !important;
 }
