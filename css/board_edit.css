@@ -1,0 +1,193 @@
+/* EditCard view */
+
+.edit-card {
+    padding: 53px 100px 100px 100px;
+ }
+ 
+ .edit-title,
+ .edit-description,
+ .edit-due-date,
+ .edit-prio {
+    display: flex;
+    flex-direction: column;
+ }
+ 
+ .edit-title {
+    margin-bottom: 20px;
+ }
+ 
+ .edit-title input,
+ .edit-description textarea,
+ .edit-due-date input {
+    border-radius: 10px;
+    border: 1px solid var(--lightgray);
+    padding: 13px 21px;
+    color: black;
+    font-family: 'Inter';
+    font-size: 21px;
+    font-weight: 400;
+    outline: none;
+ }
+ 
+ .edit-title input::placeholder {
+    color: black;
+ }
+ 
+ .edit-description,
+ .edit-due-date {
+    margin-bottom: 30px;
+ }
+ 
+ .edit-description textarea {
+    resize: vertical;
+ }
+ 
+ .edit-prio-container {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    margin-bottom: 48px;
+ }
+ 
+ .edit-prio-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 18px 10px;
+    gap: 10px;
+    border-radius: 10px;
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.1);
+    width: 33%;
+    cursor: pointer;
+ }
+ 
+ .edit-prio-button:hover {
+    box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.25);
+ }
+ 
+ .edit-headline {
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+ }
+ 
+ .edit-assigned-select-container {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    justify-content: space-between;
+    padding: 18px 21px 0 21px;
+    border-radius: 10px;
+    border: 1px solid var(--lightgray);
+    max-height: 54px;
+    overflow-y: hidden;
+    transition: max-height 0.225s ease;
+ }
+ 
+ .edit-assignes-select-button {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    cursor: pointer;
+    padding-bottom: 9px;
+ }
+ 
+ .edit-assignes-select-button div:nth-child(2) {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+ }
+ 
+ #pullDownArrow {
+    transition: transform 0.5s ease;
+ }
+ 
+ .rotateZ {
+    transform: rotateZ(180deg);
+ }
+ 
+ .edit-allUsers {
+    overflow-y: scroll;
+ }
+ 
+ .edit-assigned-user-line {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 9px 9px 0;
+ }
+ 
+ .pullDown {
+    max-height: 230px !important;
+ }
+ 
+ .edit-assigned-user-line:hover {
+    background-color: var(--gray-hover);
+ }
+ 
+ .edit-ring-container {
+    display: flex;
+    gap: 8px;
+    color: aqua;
+    border-radius: 50%;
+    margin-top: 20px;
+ }
+ 
+ .edit-ring {
+    display: flex;
+    flex-direction: row;
+    color: white;
+    background-color: aqua;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: 2px solid white;
+    justify-content: center;
+    align-items: center;
+    font-size: 21px;
+    font-weight: 400;
+ }
+ 
+ /* Add Task Container who shows up after clicking on "AddTask +"-btn */
+ 
+ /* Add_Task Container */
+ .add-task-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    position: fixed;
+    /* padding: 68px 80px; */
+    padding-top: 68px;
+    padding-right: 80px;
+    padding-bottom: 25px;
+    padding-left: 80px;
+    left: 232px;
+    /* 400px; */
+    top: 89px;
+    /* 60px; */
+    width: 81%;
+    /* fit-content; */
+    height: 90vh;
+    z-index: 100;
+    background-color: white;
+    /* border-radius: 30px; */
+    border-top-right-radius: 30px;
+    border-bottom-right-radius: 30px;
+    border-bottom-left-radius: 30px;
+    border: 0;
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.4);
+    background-color: white;
+    transition: all 0.5s ease;
+ }
+ 
+ .hide-task-container {
+    left: 250%;
+ }
+ 
+ .just-responsive {
+    display: none;
+ }
