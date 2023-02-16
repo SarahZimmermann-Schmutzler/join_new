@@ -398,10 +398,11 @@ function allowDrop(ev) {
  * @param {*} status 
  */
 async function moveTo(status) {
-   var indexOfTasksToChange = allTasks.findIndex(function (item, i) {
+   let indexOfTasksToChange = allTasks.findIndex(function (item, i) {
       return item.id == currentDraggedElement;
+      startDragging(id);
    })
-
+   
    allTasks[indexOfTasksToChange]['status'] = status;
    updateHTML(allTasks);
    await backend.setItem('allTasks', JSON.stringify(allTasks));
