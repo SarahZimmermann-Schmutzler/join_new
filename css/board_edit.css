@@ -151,6 +151,11 @@
     font-size: 21px;
     font-weight: 400;
  }
+
+ .edit-change {
+   display: none;
+   margin-top: 20px;
+ }
  
  /* Add Task Container who shows up after clicking on "AddTask +"-btn */
  
@@ -171,7 +176,7 @@
     /* 60px; */
     width: 81%;
     /* fit-content; */
-    height: 90vh;
+    height: 89vh;
     z-index: 100;
     background-color: white;
     /* border-radius: 30px; */

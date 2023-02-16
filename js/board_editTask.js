@@ -2,6 +2,131 @@ setURL('https://sarah-zimmermann-schmutzler.developerakademie.net/smallest_backe
 
 let editPrio;
 
+// big-TaskCard-view after clicked on the TaskCards
+
+/**
+* starts when clicked on a TaskCard
+* opens big TaskCard and if a subtask is set => check/uncheck
+* @param {*} showTaskID 
+*/
+function showTaskBig(showTaskID) {
+    currentElement = showTaskID;
+    document.getElementById('show-task').classList.remove('d-none');
+    const element = allTasks.find(el => el.id == showTaskID);
+    document.getElementById('show-category').innerHTML = element['category'];
+    document.getElementById('show-category').style.backgroundColor = element['categoryColor'];
+    document.getElementById('show-title').innerHTML = element['title'];
+    document.getElementById('show-description').innerHTML = element['description'];
+    document.getElementById('show-date').innerHTML = element['dueDate'];
+    renderShowPriority(element);
+    renderShowAssigned(element);
+    renderShowSubtasks(element);
+ }
+ 
+ 
+ /**
+  * renders "priority" on big TaskCard 
+  * @param {*} element 
+  */
+ function renderShowPriority(element) {
+    let backgroundColr;
+    let text;
+    let sign;
+ 
+    if (element['priority'] == 1) {
+       backgroundColr = "#7AE229"
+       sign = './assets/img/board/arrows-down-white.png';
+       text = 'Low';
+    }
+ 
+    if (element['priority'] == 2) {
+       backgroundColr = "#FFA800";
+       sign = './assets/img/board/equal-sign-white.png';
+       text = 'Medium';
+    }
+ 
+    if (element['priority'] == 3) {
+       backgroundColr = "#FF3D00";
+       sign = './assets/img/board/arrows-up-white.png';
+       text = 'Urgent';
+    }
+    document.getElementById('show-priority').style.backgroundColor = backgroundColr;
+    document.getElementById('show-priority').innerHTML = text + `<img src="${sign}" alt="">`;
+ }
+ 
+ 
+ /**
+  * renders "assigned on" big TaskCard 
+  * @param {*} element
+  */
+ function renderShowAssigned(element) {
+    document.getElementById('show-assigned').innerHTML = '';
+ 
+    for (i = 0; i < element['assigned']['assigned'].length; i++) {
+       let memberID = element['assigned']['assigned'][i];
+       teamMember = allUsers.find(el => el.id == memberID).name;
+       let memberCapitals = getCapitals(teamMember)
+       let position = findIndexOf(teamMember);
+       let userColor = ringColorsOfUser[position];
+       document.getElementById('show-assigned').innerHTML += renderShowAssignedHTML(userColor, memberCapitals, teamMember);
+    }
+ }
+ 
+ 
+ /**
+  * render subtasks on big show card
+  * @param {*} element 
+  */
+ function renderShowSubtasks(element) {
+    document.getElementById('show-subtask-list').innerHTML = '';
+    let subtaskLength = element['subtasks']['subtasks'].length;
+    if (subtaskLength > 0) {
+       document.getElementById('show-subtask-container').classList.remove('d-none');
+ 
+       for (i = 0; i < subtaskLength; i++) {
+          let subtaskStatus = element['subtasks']['subtasks'][i]['subStatus'];
+          let checkBox = "./assets/img/board/checkbox-unchecked.png";
+          if (subtaskStatus == 'done') { checkBox = "./assets/img/board/checkbox-checked.png" }
+          document.getElementById('show-subtask-list').innerHTML += renderShowSubtasksHTML(element, checkBox, i);
+       }
+    }
+    else {
+       document.getElementById('show-subtask-container').classList.add('d-none');
+    }
+ }
+ 
+ 
+ /**
+  * checks if subtasks is open or done
+  * @param {*} taskID 
+  * @param {*} subtaskID 
+  */
+ async function checkSubtask(taskID, subtaskID) {
+    const element = allTasks.find(el => el.id == taskID);
+    if (element['subtasks']['subtasks'][subtaskID]['subStatus'] == 'open') {
+       element['subtasks']['subtasks'][subtaskID]['subStatus'] = 'done';
+    } else {
+       element['subtasks']['subtasks'][subtaskID]['subStatus'] = 'open';
+    }
+    renderShowSubtasks(element);
+    await backend.setItem('allTasks', JSON.stringify(allTasks));
+ }
+ 
+ 
+ /**
+  * starts when clicked on X on big TaskCard or EditCard
+  * closes card 
+  * @param {*} cardName 
+  */
+ function closeCard(cardName) {
+    document.getElementById(cardName).classList.add('d-none');
+    document.getElementById('edit-assigned-container').classList.remove('pullDown');
+    document.getElementById('search-input').value = '';
+    marker = 0;
+    updateHTML(allTasks);
+ }
+
+
 // EditCard-view after clicking on pencil-btn on big TaskCard
 
 /**
@@ -14,7 +139,7 @@ function openEditCard() {
 }
 
 /**
- * renderEditCard
+ * renders EditCard
  */
 function renderEditCard() {
     let element = allTasks.find(task => task.id == currentElement);
@@ -154,6 +279,16 @@ function renderEditRings(element) {
        <div class="edit-ring" style="background-color:${userColor}">${memberCapitals}</div>
        `;
     }
+}
+
+
+/**
+ * starts when clicked on arrow-btn in category change Status (responsive view)
+ * opens drop down menu
+ */
+function pullDownStatus() {
+    document.getElementById('edit-change-container').classList.toggle('pullDown');
+    document.getElementById('pull-down-arrow').classList.toggle('rotateZ');
 }
 
 

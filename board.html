@@ -263,6 +263,40 @@
                   <div class="edit-ring">#</div>
                </div>
 
+               <!------ change status of task in responsive view ------>
+               <div class="edit-change">
+                  <span class="edit-headline">Change Status of Task</span>
+
+                  <div class="edit-assigned-select-container" id="edit-change-container">
+                     <div class="edit-assignes-select-button" onclick="pullDownStatus()">
+                        <div>Select Status</div>
+                        <div><img id="pull-down-arrow" src="./assets/img/board/pulldown-arrow.png" alt=""></div>
+                     </div>
+
+                     <div class="edit-allUsers">
+                        <div class="edit-assigned-user-line">
+                           <div>Todo</div>
+                           <input type="checkbox" onclick="moveTo('todo')">
+                        </div>
+
+                        <div class="edit-assigned-user-line">
+                           <div>Progress</div>
+                           <input type="checkbox" onclick="moveTo('progress')">
+                        </div>
+
+                        <div class="edit-assigned-user-line">
+                           <div>Awaiting Feedback</div>
+                           <input type="checkbox" onclick="moveTo('await')">
+                        </div>
+
+                        <div class="edit-assigned-user-line">
+                           <div>Done</div>
+                           <input type="checkbox" onclick="moveTo('done')">
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
                <!---- buttons edit card ---->
                <div class="button-close" onclick="closeCard('edit-card')">
                   <img src="./assets/img/board/close-x.png" alt="">
