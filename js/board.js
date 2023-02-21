@@ -1,7 +1,6 @@
 setURL('https://sarah-zimmermann-schmutzler.developerakademie.net/smallest_backend_ever');
 
 let ringColorsOfUser = [];
-let currentElement;
 let marker = 0;
 let allTodos;
 let allProgress;
@@ -116,6 +115,69 @@ function timeout() {
 }
 
 
+// Drag and Drop Functions
+
+let currentDraggedElement;
+
+/**
+ * starts dragging and rotates the dragged card 
+ * @param {*} id 
+ */
+function startDragging(id) {
+   currentDraggedElement = id;
+   document.getElementById(id).classList.add('aslant');
+}
+
+/**
+ * allows container to drop
+ * @param {*} ev 
+ */
+function allowDrop(ev) {
+   ev.preventDefault();
+}
+
+/**
+ * changes status of dropped task and updates content,
+ * saves new status on server
+ * @param {*} status 
+ */
+async function moveTo(status) {
+   let currentDraggedTask = allTasks.find(task => task.id == currentDraggedElement);
+   currentDraggedTask['status'] = status;
+   updateHTML(allTasks);
+   await backend.setItem('allTasks', JSON.stringify(allTasks));
+}
+
+
+/**
+ * changes status of dropped task and updates content,
+ * saves new status on server
+ * @param {*} status 
+ */
+async function moveToMobile(status) {
+   let currentDraggedTask = allTasks.find(task => task.id == currentElement);
+   currentDraggedTask['status'] = status;
+   updateHTML(allTasks);
+   await backend.setItem('allTasks', JSON.stringify(allTasks));
+}
+
+/**
+ * highlights the actual drop container 
+ * @param {*} index 
+ */
+function highlight(index) {
+   document.getElementById(index).classList.add('highlight-div');
+}
+
+/**
+ * removes last highlight
+ * @param {*} index 
+ */
+function removeHighlight(index) {
+   document.getElementById(index).classList.remove('highlight-div');
+}
+
+
 // render functions KanbanBoard
 
 /**
@@ -165,7 +227,7 @@ function renderKanbanBoard(allTodos, allProgress, allAwait, allDone, kindOfTasks
  * @param {*} allTodos 
  */
 function renderTodos(allTodos) {
-   for (i = 0; i < allTodos.length; i++) {
+   for (let i = 0; i < allTodos.length; i++) {
       const element = allTodos[i];
       document.getElementById('todo').innerHTML += generateCardHTML(element);
    }
@@ -177,7 +239,7 @@ function renderTodos(allTodos) {
  * @param {*} allProgress 
  */
 function renderProgress(allProgress) {
-   for (i = 0; i < allProgress.length; i++) {
+   for (let i = 0; i < allProgress.length; i++) {
       const element = allProgress[i];
       document.getElementById('progress').innerHTML += generateCardHTML(element);
    }
@@ -189,7 +251,7 @@ function renderProgress(allProgress) {
  * @param {*} allAwait 
  */
 function renderAwait(allAwait) {
-   for (i = 0; i < allAwait.length; i++) {
+   for (let i = 0; i < allAwait.length; i++) {
       const element = allAwait[i];
       document.getElementById('await').innerHTML += generateCardHTML(element);
    }
@@ -201,7 +263,7 @@ function renderAwait(allAwait) {
  * @param {*} allDone
  */
 function renderDone(allDone) {
-   for (i = 0; i < allDone.length; i++) {
+   for (let i = 0; i < allDone.length; i++) {
       const element = allDone[i];
       document.getElementById('done').innerHTML += generateCardHTML(element);
    }
@@ -247,7 +309,7 @@ function generateCardHTML(element) {
  * @param {*} kindOfTasks 
  */
 function renderPrio(kindOfTasks) {
-   for (i = 0; i < kindOfTasks.length; i++) {
+   for (let i = 0; i < kindOfTasks.length; i++) {
       const element = kindOfTasks[i];
       if (element['priority'] == 1) document.getElementById(`card-prio-${element['id']}`).src = "./assets/img/add_task/low-arrow.svg";
       if (element['priority'] == 2) document.getElementById(`card-prio-${element['id']}`).src = "./assets/img/add_task/medium_equal.svg";
@@ -289,19 +351,19 @@ function renderSubtaskBoard(kindOfTasks) {
  * finds teammember color, render color rings with capitals or digit if more then 3 members
  */
 function renderLetter(kindOfTasks) {
-   for (i = 0; i < kindOfTasks.length; i++) {
+   for (let i = 0; i < kindOfTasks.length; i++) {
       const element = kindOfTasks[i];
       let teamLength = element['assigned']['assigned'].length; //5
       let teamMember = [];   //Array of IDs of team members
 
-      for (j = 0; j < teamLength; j++) {
+      for (let j = 0; j < teamLength; j++) {
          let memberID = element['assigned']['assigned'][j];
          teamMember.push(memberID);
       }
 
       kLenght = teamMember.length;
       if (kLenght > 3) { kLenght = 3 }
-      for (k = 0; k < kLenght; k++) {
+      for (let k = 0; k < kLenght; k++) {
          let memberName = allUsers.find(el => el.id == teamMember[k]);
          memberName = memberName['name'];
          let capitals = getCapitals(memberName);
@@ -338,7 +400,7 @@ function getCapitals(memberName) {
  * @returns 
  */
 function findIndexOf(memberName) {
-   for (var l = 0; l < allUsers.length; l++) {
+   for (let l = 0; l < allUsers.length; l++) {
       if (allUsers[l].name === memberName) {
          return l;
       }
@@ -350,7 +412,7 @@ function findIndexOf(memberName) {
  * set ring color of user by random
  */
 function setRingColors() {
-   for (i = 0; i < allUsers.length; i++) {
+   for (let i = 0; i < allUsers.length; i++) {
       var color = getRandomColor();
       ringColorsOfUser.push(color);
    }
@@ -368,58 +430,4 @@ function getRandomColor() {
       color += letters[Math.floor(Math.random() * 16)];
    }
    return color;
-}
-
-
-// Drag and Drop Functions
-
-let currentDraggedElement;
-
-/**
- * starts dragging and rotates the dragged card 
- * @param {*} id 
- */
-function startDragging(id) {
-   currentDraggedElement = id;
-   document.getElementById(id).classList.add('aslant');
-}
-
-/**
- * allows container to drop
- * @param {*} ev 
- */
-function allowDrop(ev) {
-   ev.preventDefault();
-}
-
-/**
- * changes status of dropped task and updates content,
- * saves new status on server
- * @param {*} status 
- */
-async function moveTo(status) {
-   let indexOfTasksToChange = allTasks.findIndex(function (item, i) {
-      return item.id == currentDraggedElement;
-      startDragging(id);
-   })
-   
-   allTasks[indexOfTasksToChange]['status'] = status;
-   updateHTML(allTasks);
-   await backend.setItem('allTasks', JSON.stringify(allTasks));
-}
-
-/**
- * highlights the actual drop container 
- * @param {*} index 
- */
-function highlight(index) {
-   document.getElementById(index).classList.add('highlight-div');
-}
-
-/**
- * removes last highlight
- * @param {*} index 
- */
-function removeHighlight(index) {
-   document.getElementById(index).classList.remove('highlight-div');
 }

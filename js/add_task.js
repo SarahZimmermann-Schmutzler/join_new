@@ -185,7 +185,7 @@ function taskContent() {
    let title = document.getElementById('add-title').value;
    let description = document.getElementById('add-description').value;
    let subtasks = checkSubtasks();
-   taskID += 1;
+   taskID = allTasks.length;
    return {
       'id': taskID,
       'title': title,

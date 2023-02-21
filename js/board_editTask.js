@@ -1,6 +1,7 @@
 setURL('https://sarah-zimmermann-schmutzler.developerakademie.net/smallest_backend_ever');
 
 let editPrio;
+let currentElement;
 
 // big-TaskCard-view after clicked on the TaskCards
 
