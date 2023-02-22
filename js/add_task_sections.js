@@ -70,7 +70,7 @@ function renderNewCategory() {
 
 function renderNewCategoryHTML() {
     return /*html*/ `<div class="new-category">
-    <input id="input-new-category" type="text" placeholder="New category name" >
+    <input id="input-new-category" required type="text" placeholder="New category name" >
     <button type="button" onclick="loadCategories('Select task Category','#fff')"><img src="./assets/img/add_task/x-img.png" alt=""></button>
     <div></div>
     <button type="button" onclick="setNewCategory()"><img src="./assets/img/add_task/check-black.png" alt=""></button>
@@ -94,8 +94,10 @@ function loadCategories(category, categoryColor) {
 */
 function setNewCategory() {
     category = document.getElementById('input-new-category').value;
-    document.getElementById('categories').innerHTML = renderCategories(category, categoryColor);
-    document.getElementById('color-picker').classList.add('d-none');
+    if (category) {
+        document.getElementById('categories').innerHTML = renderCategories(category, categoryColor);
+        document.getElementById('color-picker').classList.add('d-none');
+    }
 }
 
 

@@ -137,7 +137,7 @@
 
     .header-container {
         justify-content: center;
-        transform: translateY(1955%);
+        transform: translateY(1850%);
     }
 
     .headline-mobile {
@@ -205,7 +205,7 @@
     }
 
     .header-container {
-        transform: translateY(1930%);
+        transform: translateY(1850%);
     }
 
     .width-btn {

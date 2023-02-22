@@ -326,7 +326,7 @@ function renderPrio(kindOfTasks) {
 function renderSubtaskBoard(kindOfTasks) {
    for (i = 0; i < kindOfTasks.length; i++) {
       let subDone = 0;
-      let progress = 5;
+      let progress = 0;
       const element = kindOfTasks[i]
       const length = element['subtasks']['subtasks'].length;
       for (j = 0; j < length; j++) {
@@ -337,6 +337,10 @@ function renderSubtaskBoard(kindOfTasks) {
       if (length > 0) {
          document.getElementById(`subtask-${element['id']}`).classList.remove('d-none');
          document.getElementById(`doneCounter-${element['id']}`).innerHTML = `${subDone}/${length} Done`;
+      }
+      if (subDone == 0) {
+         progress = 0;
+         document.getElementById(`progressbar-blue-${element['id']}`).setAttribute('style', `width:${progress}%`);
       }
       if (subDone > 0) {
          progress = subDone * 100 / length;

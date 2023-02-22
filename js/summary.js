@@ -107,7 +107,7 @@ function setDayTime() {
 function getLoggedUser() {
    currentUser = JSON.parse(localStorage.getItem('logged User') || '9999');
    if (currentUser == '9999') {
-      document.getElementById('welcomeName').innerHTML = '';
+      document.getElementById('welcomeName').innerHTML = 'Dear Guest';
       return
    } else {
       welcomeUser(currentUser);
